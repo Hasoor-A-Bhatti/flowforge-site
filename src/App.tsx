@@ -1,4 +1,3 @@
-import React from "react";
 import {
   ArrowRight,
   Bot,
@@ -6,12 +5,9 @@ import {
   FileText,
   MessageSquare,
   CheckCircle,
-  Zap,
   Shield,
   Clock,
   Sparkles,
-  Layers,
-  Cpu,
   Building2,
   CalendarCheck,
   Mail,
