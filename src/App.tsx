@@ -139,9 +139,11 @@ export default function App() {
         <div className="mx-auto max-w-7xl">
           <nav className="flex items-center justify-between rounded-full border border-white/10 bg-white/[0.06] px-4 py-3 shadow-2xl shadow-fuchsia-500/5 backdrop-blur-2xl md:px-5">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-blue-500 shadow-lg shadow-fuchsia-500/25">
-                <span className="font-black tracking-tight">FF</span>
-              </div>
+              <img
+                src="/icon.png"
+                alt="FlowForge AI logo"
+                className="h-11 w-11 rounded-2xl object-cover shadow-lg shadow-fuchsia-500/25"
+              />
               <div>
                 <p className="text-lg font-semibold tracking-tight">FlowForge AI</p>
                 <p className="text-xs text-slate-400">by FlowForge Systems Ltd</p>
