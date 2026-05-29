@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ArrowRight,
   Bot,
@@ -130,6 +131,36 @@ const trustPoints = [
 ];
 
 export default function App() {
+  const [formStatus, setFormStatus] = useState<"idle" | "success" | "error">(
+    "idle"
+  );
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const response = await fetch("https://formspree.io/f/xqejjyjl", {
+      method: "POST",
+      body: formData,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (response.ok) {
+      setFormStatus("success");
+      form.reset();
+
+      setTimeout(() => {
+        setFormStatus("idle");
+      }, 4000);
+    } else {
+      setFormStatus("error");
+    }
+  }
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#05050a] text-white">
       <section className="relative px-6 py-8 md:px-12 lg:px-20">
@@ -145,27 +176,48 @@ export default function App() {
                 className="h-11 w-11 rounded-2xl object-cover shadow-lg shadow-fuchsia-500/25"
               />
               <div>
-                <p className="text-lg font-semibold tracking-tight">FlowForge AI</p>
-                <p className="text-xs text-slate-400">by FlowForge Systems Ltd</p>
+                <p className="text-lg font-semibold tracking-tight">
+                  FlowForge AI
+                </p>
+                <p className="text-xs text-slate-400">
+                  by FlowForge Systems Ltd
+                </p>
               </div>
             </div>
 
             <div className="hidden items-center gap-2 text-sm text-slate-300 md:flex">
-              <a href="#services" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">Services</a>
-              <a href="#demos" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">Demos</a>
-              <a href="https://calendly.com/hello-flowforge-ai/free-ai-workflow-audit"
-                  target="_blank"
-                  rel="noopener noreferrer" 
-                  className="ml-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-5 py-2.5 font-semibold text-white shadow-lg shadow-fuchsia-500/25 transition hover:scale-[1.02] hover:brightness-110">
+              <a
+                href="#services"
+                className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
+              >
+                Services
+              </a>
+              <a
+                href="#demos"
+                className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white"
+              >
+                Demos
+              </a>
+              <a
+                href="https://calendly.com/hello-flowforge-ai/free-ai-workflow-audit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-5 py-2.5 font-semibold text-white shadow-lg shadow-fuchsia-500/25 transition hover:scale-[1.02] hover:brightness-110"
+              >
                 Book a Free Automation Audit
               </a>
             </div>
           </nav>
 
           <div className="grid items-center gap-16 py-20 lg:grid-cols-2 lg:py-28">
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+            >
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-fuchsia-300/20 bg-white/10 px-4 py-2 text-sm text-fuchsia-100 backdrop-blur-xl">
-                <Sparkles size={16} /> Premium AI workflow automation for UK SMEs
+                <Sparkles size={16} /> Premium AI workflow automation for UK
+                SMEs
               </div>
 
               <h1 className="max-w-4xl text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl">
@@ -173,52 +225,92 @@ export default function App() {
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300 md:text-xl">
-                FlowForge AI helps ambitious UK businesses streamline operations, eliminate repetitive admin, and implement premium AI-powered systems without adding complexity.
+                FlowForge AI helps ambitious UK businesses streamline
+                operations, eliminate repetitive admin, and implement premium
+                AI-powered systems without adding complexity.
               </p>
 
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-                <a href="https://calendly.com/hello-flowforge-ai/free-ai-workflow-audit"
+                <a
+                  href="https://calendly.com/hello-flowforge-ai/free-ai-workflow-audit"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-7 py-4 font-semibold text-white shadow-xl shadow-fuchsia-500/25 transition hover:scale-[1.02] hover:brightness-110">
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-7 py-4 font-semibold text-white shadow-xl shadow-fuchsia-500/25 transition hover:scale-[1.02] hover:brightness-110"
+                >
                   Get a free automation audit <ArrowRight size={18} />
                 </a>
-                <a href="#demos" className="inline-flex items-center justify-center rounded-full border border-white/15 px-7 py-4 font-semibold text-white transition hover:border-fuchsia-300/40 hover:bg-white/10">
+                <a
+                  href="#demos"
+                  className="inline-flex items-center justify-center rounded-full border border-white/15 px-7 py-4 font-semibold text-white transition hover:border-fuchsia-300/40 hover:bg-white/10"
+                >
                   View demo concepts
                 </a>
               </div>
 
               <div className="mt-10 grid gap-4 text-sm text-slate-300 sm:grid-cols-3">
-                {["Save admin hours", "Improve workflows", "Respond faster"].map((item) => (
-                  <div key={item} className="flex items-center gap-2">
-                    <CheckCircle className="text-fuchsia-300" size={18} /> {item}
-                  </div>
-                ))}
+                {["Save admin hours", "Improve workflows", "Respond faster"].map(
+                  (item) => (
+                    <div key={item} className="flex items-center gap-2">
+                      <CheckCircle className="text-fuchsia-300" size={18} />{" "}
+                      {item}
+                    </div>
+                  )
+                )}
               </div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.15 }} className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-fuchsia-500/10 backdrop-blur-2xl">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-fuchsia-500/10 backdrop-blur-2xl"
+            >
               <div className="rounded-[1.5rem] border border-white/10 bg-black/40 p-6">
                 <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-400">Example automation</p>
-                    <p className="text-xl font-semibold">Lead handling workflow</p>
+                    <p className="text-sm text-slate-400">
+                      Example automation
+                    </p>
+                    <p className="text-xl font-semibold">
+                      Lead handling workflow
+                    </p>
                   </div>
-                  <div className="rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-300">Live preview</div>
+                  <div className="rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-300">
+                    Live preview
+                  </div>
                 </div>
 
                 <div className="space-y-4">
                   {[
-                    ["New enquiry received", "Website form, email, or chatbot captures the lead."],
-                    ["AI qualifies the request", "Urgency, budget, and service need are identified automatically."],
-                    ["CRM is updated", "The lead is added to the right pipeline with notes and priority."],
-                    ["Follow-up is sent", "A personalised response is sent instantly to reduce lost opportunities."],
+                    [
+                      "New enquiry received",
+                      "Website form, email, or chatbot captures the lead.",
+                    ],
+                    [
+                      "AI qualifies the request",
+                      "Urgency, budget, and service need are identified automatically.",
+                    ],
+                    [
+                      "CRM is updated",
+                      "The lead is added to the right pipeline with notes and priority.",
+                    ],
+                    [
+                      "Follow-up is sent",
+                      "A personalised response is sent instantly to reduce lost opportunities.",
+                    ],
                   ].map(([title, body], index) => (
-                    <div key={title} className="flex gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:bg-white/[0.07]">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-fuchsia-500/15 text-sm font-bold text-fuchsia-200">{index + 1}</div>
+                    <div
+                      key={title}
+                      className="flex gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:bg-white/[0.07]"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-fuchsia-500/15 text-sm font-bold text-fuchsia-200">
+                        {index + 1}
+                      </div>
                       <div>
                         <p className="font-semibold">{title}</p>
-                        <p className="mt-1 text-sm leading-6 text-slate-400">{body}</p>
+                        <p className="mt-1 text-sm leading-6 text-slate-400">
+                          {body}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -232,7 +324,10 @@ export default function App() {
       <section className="px-6 pb-10 md:px-12 lg:px-20">
         <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-3">
           {trustPoints.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+            <div
+              key={title}
+              className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl"
+            >
               <Icon className="text-fuchsia-200" size={24} />
               <h3 className="mt-4 font-semibold">{title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-400">{text}</p>
@@ -245,13 +340,21 @@ export default function App() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="font-semibold text-fuchsia-300">What we do</p>
-            <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">Premium AI systems designed for modern business operations.</h2>
-            <p className="mt-5 text-lg leading-8 text-slate-300">We help SMEs operate with the speed, structure, and efficiency of much larger companies through practical AI-powered automation.</p>
+            <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">
+              Premium AI systems designed for modern business operations.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-slate-300">
+              We help SMEs operate with the speed, structure, and efficiency of
+              much larger companies through practical AI-powered automation.
+            </p>
           </div>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {services.map(({ icon: Icon, title, text }) => (
-              <div key={title} className="rounded-3xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:bg-white/[0.08] hover:shadow-2xl hover:shadow-fuchsia-500/10">
+              <div
+                key={title}
+                className="rounded-3xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:bg-white/[0.08] hover:shadow-2xl hover:shadow-fuchsia-500/10"
+              >
                 <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-fuchsia-500/15 text-fuchsia-200">
                   <Icon size={24} />
                 </div>
@@ -268,14 +371,24 @@ export default function App() {
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
               <p className="font-semibold text-fuchsia-300">Who we help</p>
-              <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">Built for SMEs with busy teams and manual admin pressure.</h2>
-              <p className="mt-5 text-lg leading-8 text-slate-300">We work best with service-based businesses where time, speed, organisation, and customer response matter.</p>
+              <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">
+                Built for SMEs with busy teams and manual admin pressure.
+              </h2>
+              <p className="mt-5 text-lg leading-8 text-slate-300">
+                We work best with service-based businesses where time, speed,
+                organisation, and customer response matter.
+              </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {industries.map((industry) => (
-                <div key={industry} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur-xl">
+                <div
+                  key={industry}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur-xl"
+                >
                   <Building2 className="text-fuchsia-200" size={20} />
-                  <span className="font-medium text-slate-200">{industry}</span>
+                  <span className="font-medium text-slate-200">
+                    {industry}
+                  </span>
                 </div>
               ))}
             </div>
@@ -287,14 +400,19 @@ export default function App() {
         <div className="mx-auto grid max-w-7xl gap-10 rounded-[2rem] border border-white/10 bg-white/[0.05] p-8 backdrop-blur-xl md:p-12 lg:grid-cols-3">
           <div>
             <p className="font-semibold text-fuchsia-300">Business outcomes</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">Modern businesses do not need more software. They need smarter systems.</h2>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
+              Modern businesses do not need more software. They need smarter
+              systems.
+            </h2>
           </div>
           <div className="grid gap-5 md:grid-cols-3 lg:col-span-2">
             {outcomes.map(({ icon: Icon, title, text }) => (
               <div key={title} className="rounded-3xl bg-black/40 p-6">
                 <Icon className="text-fuchsia-200" size={26} />
                 <h3 className="mt-5 text-lg font-semibold">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-400">{text}</p>
+                <p className="mt-3 text-sm leading-6 text-slate-400">
+                  {text}
+                </p>
               </div>
             ))}
           </div>
@@ -306,19 +424,34 @@ export default function App() {
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-3xl">
               <p className="font-semibold text-fuchsia-300">Demo concepts</p>
-              <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">Real systems you will soon be able to see in action.</h2>
-              <p className="mt-5 text-lg leading-8 text-slate-300">Use these as placeholder portfolio items until your first demos are ready. Replace them later with real videos, screenshots, or case studies.</p>
+              <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">
+                Real systems you will soon be able to see in action.
+              </h2>
+              <p className="mt-5 text-lg leading-8 text-slate-300">
+                Use these as placeholder portfolio items until your first demos
+                are ready. Replace them later with real videos, screenshots, or
+                case studies.
+              </p>
             </div>
           </div>
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {demos.map((demo) => (
-              <div key={demo.title} className="group rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-7 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-fuchsia-500/10">
-                <span className="rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-xs font-semibold text-fuchsia-100">{demo.label}</span>
+              <div
+                key={demo.title}
+                className="group rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] p-7 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-fuchsia-500/10"
+              >
+                <span className="rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-xs font-semibold text-fuchsia-100">
+                  {demo.label}
+                </span>
                 <h3 className="mt-6 text-2xl font-semibold">{demo.title}</h3>
                 <p className="mt-4 leading-7 text-slate-400">{demo.text}</p>
                 <div className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-fuchsia-200">
-                  Add demo later <ChevronRight size={16} className="transition group-hover:translate-x-1" />
+                  Add demo later{" "}
+                  <ChevronRight
+                    size={16}
+                    className="transition group-hover:translate-x-1"
+                  />
                 </div>
               </div>
             ))}
@@ -330,11 +463,16 @@ export default function App() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="font-semibold text-fuchsia-300">How it works</p>
-            <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">A simple path from messy workflow to automated system.</h2>
+            <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">
+              A simple path from messy workflow to automated system.
+            </h2>
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {process.map(({ step, title, text }) => (
-              <div key={step} className="rounded-3xl border border-white/10 bg-white/[0.05] p-7 backdrop-blur-xl">
+              <div
+                key={step}
+                className="rounded-3xl border border-white/10 bg-white/[0.05] p-7 backdrop-blur-xl"
+              >
                 <p className="text-sm font-bold text-fuchsia-200">{step}</p>
                 <h3 className="mt-5 text-2xl font-semibold">{title}</h3>
                 <p className="mt-4 leading-7 text-slate-400">{text}</p>
@@ -349,20 +487,35 @@ export default function App() {
           <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-blue-600 p-8 shadow-2xl shadow-fuchsia-500/20 md:p-12">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent_35%)]" />
             <div className="relative">
-              <p className="font-semibold text-fuchsia-50">Free workflow audit</p>
-              <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">Find out what your business could automate.</h2>
-              <p className="mt-5 text-lg leading-8 text-fuchsia-50/90">Tell us about your current admin bottlenecks and we’ll identify practical AI automation opportunities.</p>
+              <p className="font-semibold text-fuchsia-50">
+                Free workflow audit
+              </p>
+              <h2 className="mt-3 text-4xl font-bold tracking-tight md:text-5xl">
+                Find out what your business could automate.
+              </h2>
+              <p className="mt-5 text-lg leading-8 text-fuchsia-50/90">
+                Tell us about your current admin bottlenecks and we’ll identify
+                practical AI automation opportunities.
+              </p>
               <div className="mt-8 space-y-4 text-sm text-fuchsia-50/90">
-                <div className="flex items-center gap-3"><CalendarCheck size={18} /> No-pressure discovery conversation</div>
-                <div className="flex items-center gap-3"><CheckCircle size={18} /> Clear recommendations, not technical jargon</div>
-                <div className="flex items-center gap-3"><CheckCircle size={18} /> Suitable for SMEs exploring automation</div>
+                <div className="flex items-center gap-3">
+                  <CalendarCheck size={18} /> No-pressure discovery
+                  conversation
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle size={18} /> Clear recommendations, not
+                  technical jargon
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle size={18} /> Suitable for SMEs exploring
+                  automation
+                </div>
               </div>
             </div>
           </div>
 
           <form
-            action="https://formspree.io/f/xqejjyjl"
-            method="POST"
+            onSubmit={handleSubmit}
             className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-6 backdrop-blur-2xl md:p-8"
           >
             <div className="mb-6">
@@ -373,8 +526,8 @@ export default function App() {
                 Tell us what you’d like to automate.
               </h3>
               <p className="mt-3 text-sm leading-6 text-slate-400">
-                Not ready to book a call yet? Send a quick enquiry and we’ll get back to
-                you with practical next steps.
+                Not ready to book a call yet? Send a quick enquiry and we’ll get
+                back to you with practical next steps.
               </p>
             </div>
 
@@ -390,7 +543,9 @@ export default function App() {
               </label>
 
               <label className="space-y-2">
-                <span className="text-sm font-medium text-slate-300">Email</span>
+                <span className="text-sm font-medium text-slate-300">
+                  Email
+                </span>
                 <input
                   name="email"
                   type="email"
@@ -403,7 +558,9 @@ export default function App() {
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <label className="space-y-2">
-                <span className="text-sm font-medium text-slate-300">Company</span>
+                <span className="text-sm font-medium text-slate-300">
+                  Company
+                </span>
                 <input
                   name="company"
                   className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
@@ -412,7 +569,9 @@ export default function App() {
               </label>
 
               <label className="space-y-2">
-                <span className="text-sm font-medium text-slate-300">Phone</span>
+                <span className="text-sm font-medium text-slate-300">
+                  Phone
+                </span>
                 <input
                   name="phone"
                   className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
@@ -439,6 +598,19 @@ export default function App() {
               value="New FlowForge AI website enquiry"
             />
 
+            {formStatus === "success" && (
+              <div className="mt-5 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm font-medium text-emerald-300">
+                Enquiry sent successfully. We’ll get back to you soon.
+              </div>
+            )}
+
+            {formStatus === "error" && (
+              <div className="mt-5 rounded-2xl border border-red-400/20 bg-red-400/10 px-4 py-3 text-sm font-medium text-red-300">
+                Something went wrong. Please try again or email
+                hello@flowforge-ai.co.uk.
+              </div>
+            )}
+
             <button
               type="submit"
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-7 py-4 font-semibold text-white shadow-xl shadow-fuchsia-500/25 transition hover:scale-[1.01] hover:brightness-110"
@@ -457,13 +629,19 @@ export default function App() {
         <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-3">
           <div>
             <p className="font-semibold text-slate-300">FlowForge AI</p>
-            <p className="mt-2">FlowForge Systems Ltd trading as FlowForge AI.</p>
+            <p className="mt-2">
+              FlowForge Systems Ltd trading as FlowForge AI.
+            </p>
           </div>
           <div>
             <p className="font-semibold text-slate-300">Contact</p>
             <div className="mt-2 space-y-2">
-              <p className="flex items-center gap-2"><Mail size={14} /> hello@flowforge-ai.co.uk</p>
-              <p className="flex items-center gap-2"><Phone size={14} /> Add business phone later</p>
+              <p className="flex items-center gap-2">
+                <Mail size={14} /> hello@flowforge-ai.co.uk
+              </p>
+              <p className="flex items-center gap-2">
+                <Phone size={14} /> Add business phone later
+              </p>
             </div>
           </div>
           <div>
