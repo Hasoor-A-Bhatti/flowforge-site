@@ -153,8 +153,11 @@ export default function App() {
             <div className="hidden items-center gap-2 text-sm text-slate-300 md:flex">
               <a href="#services" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">Services</a>
               <a href="#demos" className="rounded-full px-4 py-2 transition hover:bg-white/10 hover:text-white">Demos</a>
-              <a href="#contact" className="ml-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-5 py-2.5 font-semibold text-white shadow-lg shadow-fuchsia-500/25 transition hover:scale-[1.02] hover:brightness-110">
-                Book a free audit
+              <a href="https://calendly.com/hello-flowforge-ai/free-ai-workflow-audit"
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  className="ml-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-5 py-2.5 font-semibold text-white shadow-lg shadow-fuchsia-500/25 transition hover:scale-[1.02] hover:brightness-110">
+                Book a Free Automation Audit
               </a>
             </div>
           </nav>
@@ -174,7 +177,10 @@ export default function App() {
               </p>
 
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-                <a href="#contact" className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-7 py-4 font-semibold text-white shadow-xl shadow-fuchsia-500/25 transition hover:scale-[1.02] hover:brightness-110">
+                <a href="https://calendly.com/hello-flowforge-ai/free-ai-workflow-audit"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-7 py-4 font-semibold text-white shadow-xl shadow-fuchsia-500/25 transition hover:scale-[1.02] hover:brightness-110">
                   Get a free automation audit <ArrowRight size={18} />
                 </a>
                 <a href="#demos" className="inline-flex items-center justify-center rounded-full border border-white/15 px-7 py-4 font-semibold text-white transition hover:border-fuchsia-300/40 hover:bg-white/10">
