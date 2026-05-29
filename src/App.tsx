@@ -361,8 +361,9 @@ export default function App() {
           </div>
 
           <form
+            action="https://formspree.io/f/xqejjyjl"
+            method="POST"
             className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-6 backdrop-blur-2xl md:p-8"
-            onSubmit={(event) => event.preventDefault()}
           >
             <div className="mb-6">
               <p className="text-sm font-semibold text-fuchsia-300">
@@ -381,6 +382,8 @@ export default function App() {
               <label className="space-y-2">
                 <span className="text-sm font-medium text-slate-300">Name</span>
                 <input
+                  name="name"
+                  required
                   className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
                   placeholder="Your name"
                 />
@@ -389,7 +392,9 @@ export default function App() {
               <label className="space-y-2">
                 <span className="text-sm font-medium text-slate-300">Email</span>
                 <input
+                  name="email"
                   type="email"
+                  required
                   className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
                   placeholder="you@company.com"
                 />
@@ -400,6 +405,7 @@ export default function App() {
               <label className="space-y-2">
                 <span className="text-sm font-medium text-slate-300">Company</span>
                 <input
+                  name="company"
                   className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
                   placeholder="Company name"
                 />
@@ -408,6 +414,7 @@ export default function App() {
               <label className="space-y-2">
                 <span className="text-sm font-medium text-slate-300">Phone</span>
                 <input
+                  name="phone"
                   className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
                   placeholder="Optional"
                 />
@@ -419,10 +426,18 @@ export default function App() {
                 What would you like help with?
               </span>
               <textarea
+                name="message"
+                required
                 className="min-h-32 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
                 placeholder="Example: we spend too much time chasing leads, processing invoices, replying to emails, updating spreadsheets..."
               />
             </label>
+
+            <input
+              type="hidden"
+              name="_subject"
+              value="New FlowForge AI website enquiry"
+            />
 
             <button
               type="submit"
