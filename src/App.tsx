@@ -360,35 +360,80 @@ export default function App() {
             </div>
           </div>
 
-          <form className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-6 backdrop-blur-2xl md:p-8" onSubmit={(event) => event.preventDefault()}>
+          <form
+            className="rounded-[2rem] border border-white/10 bg-white/[0.06] p-6 backdrop-blur-2xl md:p-8"
+            onSubmit={(event) => event.preventDefault()}
+          >
+            <div className="mb-6">
+              <p className="text-sm font-semibold text-fuchsia-300">
+                Prefer to message first?
+              </p>
+              <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
+                Tell us what you’d like to automate.
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                Not ready to book a call yet? Send a quick enquiry and we’ll get back to
+                you with practical next steps.
+              </p>
+            </div>
+
             <div className="grid gap-4 md:grid-cols-2">
               <label className="space-y-2">
                 <span className="text-sm font-medium text-slate-300">Name</span>
-                <input className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50" placeholder="Your name" />
+                <input
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
+                  placeholder="Your name"
+                />
               </label>
+
               <label className="space-y-2">
                 <span className="text-sm font-medium text-slate-300">Email</span>
-                <input type="email" className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50" placeholder="you@company.com" />
+                <input
+                  type="email"
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
+                  placeholder="you@company.com"
+                />
               </label>
             </div>
+
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <label className="space-y-2">
                 <span className="text-sm font-medium text-slate-300">Company</span>
-                <input className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50" placeholder="Company name" />
+                <input
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
+                  placeholder="Company name"
+                />
               </label>
+
               <label className="space-y-2">
                 <span className="text-sm font-medium text-slate-300">Phone</span>
-                <input className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50" placeholder="Optional" />
+                <input
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
+                  placeholder="Optional"
+                />
               </label>
             </div>
+
             <label className="mt-4 block space-y-2">
-              <span className="text-sm font-medium text-slate-300">What would you like to automate?</span>
-              <textarea className="min-h-32 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50" placeholder="Example: lead follow-ups, invoice processing, admin emails, appointment reminders..." />
+              <span className="text-sm font-medium text-slate-300">
+                What would you like help with?
+              </span>
+              <textarea
+                className="min-h-32 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-fuchsia-300/50"
+                placeholder="Example: we spend too much time chasing leads, processing invoices, replying to emails, updating spreadsheets..."
+              />
             </label>
-            <button type="submit" className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-7 py-4 font-semibold text-white shadow-xl shadow-fuchsia-500/25 transition hover:scale-[1.01] hover:brightness-110">
-              Request free audit <ArrowRight size={18} />
+
+            <button
+              type="submit"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-7 py-4 font-semibold text-white shadow-xl shadow-fuchsia-500/25 transition hover:scale-[1.01] hover:brightness-110"
+            >
+              Send enquiry <ArrowRight size={18} />
             </button>
-            <p className="mt-4 text-center text-xs text-slate-500">Form placeholder: connect this to Formspree, Resend, EmailJS, or your backend before launch.</p>
+
+            <p className="mt-4 text-center text-xs text-slate-500">
+              Prefer a call? Use the free audit booking link above.
+            </p>
           </form>
         </div>
       </section>
