@@ -428,9 +428,7 @@ export default function App() {
                 Real systems you will soon be able to see in action.
               </h2>
               <p className="mt-5 text-lg leading-8 text-slate-300">
-                Use these as placeholder portfolio items until your first demos
-                are ready. Replace them later with real videos, screenshots, or
-                case studies.
+                Portfolio demos are coming soon. In the meantime, here are some concepts of the types of systems we are building for clients. Each one is designed to save time, reduce friction, and create a better experience for both teams and customers.
               </p>
             </div>
           </div>
@@ -640,15 +638,15 @@ export default function App() {
                 <Mail size={14} /> hello@flowforge-ai.co.uk
               </p>
               <p className="flex items-center gap-2">
-                <Phone size={14} /> Add business phone later
+                <Phone size={14} /> 07480852059
               </p>
             </div>
           </div>
           <div>
             <p className="font-semibold text-slate-300">Company</p>
             <p className="mt-2">AI workflow automation for UK SMEs.</p>
-            <p className="mt-2">Company number: add once approved.</p>
-            <p className="mt-2">Privacy Policy: coming soon.</p>
+            <p className="mt-2">Company number: 07480852059</p>
+            <p className="mt-2">Privacy Policy: Coming Soon.</p>
           </div>
         </div>
       </footer>
