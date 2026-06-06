@@ -277,7 +277,7 @@ export default function LeadQualificationDemoPage() {
                     currentSlide.type === "cta") &&
                     "points" in currentSlide && (
                       <div className="grid gap-4 md:grid-cols-2">
-                        {currentSlide.points.map((point, index) => (
+                        {currentSlide.points?.map((point, index) => (
                           <div
                             key={point}
                             className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"

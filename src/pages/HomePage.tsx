@@ -20,7 +20,6 @@ import {
   Sparkles,
   Target,
   Workflow,
-  Zap,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
