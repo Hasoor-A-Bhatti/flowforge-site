@@ -112,3 +112,6 @@ body {
   .rise { animation: none; }
   html { scroll-behavior: auto; }
 }
+
+/* Options in the open dropdown list always use normal ink, even when the closed select shows placeholder grey */
+select option { color: var(--color-ink); }

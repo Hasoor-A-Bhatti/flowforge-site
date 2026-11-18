@@ -16,6 +16,7 @@ import {
   Star,
   Timer,
   Wrench,
+  ChevronDown,
 } from "lucide-react";
 import { SiteFooter, SiteNav } from "../components/SiteChrome";
 import { GrowthSimulator, QuickEstimate } from "../components/GrowthSimulator";
@@ -299,7 +300,31 @@ const emptyForm: ContactForm = {
 };
 
 const inputCls =
-  "w-full rounded-md border border-line bg-white px-3.5 py-3 text-ink outline-none transition placeholder:text-slate-400 focus:border-ink focus:ring-2 focus:ring-ink/10";
+  "w-full rounded-md border border-line bg-white px-3.5 py-3 text-ink outline-none transition placeholder:text-slate-400 hover:border-ink/30 focus:border-ink focus:ring-2 focus:ring-ink/10";
+
+/** Native select (keeps mobile pickers and accessibility) styled to match the inputs. */
+function Select({
+  value,
+  children,
+  ...props
+}: React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <div className="relative">
+      <select
+        value={value}
+        {...props}
+        className={`${inputCls} cursor-pointer appearance-none pr-10 ${value ? "text-ink" : "text-slate-400"}`}
+      >
+        {children}
+      </select>
+      <ChevronDown
+        size={18}
+        aria-hidden
+        className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted"
+      />
+    </div>
+  );
+}
 
 function ContactSection() {
   const [formData, setFormData] = useState<ContactForm>(emptyForm);
@@ -373,46 +398,46 @@ function ContactSection() {
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Name</span>
+              <span className="block text-sm font-medium">Name</span>
               <input name="name" value={formData.name} onChange={handleChange} required className={inputCls} placeholder="Your name" autoComplete="name" />
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Email</span>
+              <span className="block text-sm font-medium">Email</span>
               <input name="email" type="email" value={formData.email} onChange={handleChange} required className={inputCls} placeholder="you@business.co.uk" autoComplete="email" />
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Business name</span>
+              <span className="block text-sm font-medium">Business name</span>
               <input name="company" value={formData.company} onChange={handleChange} className={inputCls} placeholder="e.g. Smith Plumbing Ltd" autoComplete="organization" />
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Phone <span className="text-muted">(optional)</span></span>
+              <span className="block text-sm font-medium">Phone <span className="text-muted">(optional)</span></span>
               <input name="phone" type="tel" value={formData.phone} onChange={handleChange} className={inputCls} placeholder="07…" autoComplete="tel" />
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Trade / sector</span>
-              <select name="trade" value={formData.trade} onChange={handleChange} required className={inputCls}>
-                <option value="">Select…</option>
+              <span className="block text-sm font-medium">Trade / sector</span>
+              <Select name="trade" value={formData.trade} onChange={handleChange} required>
+                <option value="" disabled>Choose your trade</option>
                 {trades.map((t) => (
                   <option key={t} value={t}>{t}</option>
                 ))}
                 <option value="Other service business">Other service business</option>
-              </select>
+              </Select>
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Team size</span>
-              <select name="teamSize" value={formData.teamSize} onChange={handleChange} className={inputCls}>
-                <option value="">Select…</option>
+              <span className="block text-sm font-medium">Team size</span>
+              <Select name="teamSize" value={formData.teamSize} onChange={handleChange}>
+                <option value="" disabled>How many people?</option>
                 <option>Just me</option>
-                <option>2–5</option>
-                <option>6–20</option>
-                <option>21–50</option>
-                <option>50+</option>
-              </select>
+                <option>2–5 people</option>
+                <option>6–20 people</option>
+                <option>21–50 people</option>
+                <option>50+ people</option>
+              </Select>
             </label>
           </div>
 
           <label className="mt-4 block space-y-1.5">
-            <span className="text-sm font-medium">What's taking up the most time right now?</span>
+            <span className="block text-sm font-medium">What's taking up the most time right now?</span>
             <textarea
               name="message"
               value={formData.message}
