@@ -836,10 +836,10 @@ export default function HomePage() {
         </section>
 
         {/* ABOUT */}
-        <section id="about" className="scroll-mt-20 border-t border-line px-4 py-20 md:px-6 md:py-28">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-16">
-            <figure className="mx-auto w-full max-w-sm lg:max-w-none">
-              <div className="overflow-hidden rounded-2xl border border-line bg-card shadow-[0_30px_70px_-40px_rgba(14,26,36,0.4)]">
+        <section id="about" className="scroll-mt-20 border-t border-line px-4 py-16 md:px-6 md:py-24">
+          <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[260px_1fr] lg:gap-16">
+            <figure className="order-last w-full max-w-[240px] lg:order-none lg:mt-12 lg:max-w-none">
+              <div className="overflow-hidden rounded-xl border border-line bg-card shadow-[0_20px_50px_-30px_rgba(14,26,36,0.35)]">
                 <img
                   src={founder.photo}
                   alt={`${founder.name}, founder of FlowForge AI`}
@@ -849,11 +849,12 @@ export default function HomePage() {
                   className="aspect-square w-full object-cover"
                 />
               </div>
-              <figcaption className="mt-4 flex items-center justify-between gap-4">
+              <figcaption className="mt-3 flex items-center justify-between gap-3">
                 <span>
-                  <span className="block font-display text-lg font-bold">{founder.name}</span>
-                  <span className="flex items-center gap-1.5 text-sm text-muted">
-                    {founder.role} <span aria-hidden>·</span> <MapPin size={13} /> {founder.location}
+                  <span className="block font-display font-bold">{founder.name}</span>
+                  <span className="block text-xs text-muted">{founder.role}</span>
+                  <span className="mt-0.5 flex items-center gap-1 text-xs text-muted">
+                    <MapPin size={12} /> {founder.location}
                   </span>
                 </span>
                 <a
@@ -861,9 +862,9 @@ export default function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${founder.name} on LinkedIn`}
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-line text-muted transition hover:border-ink/40 hover:text-ink"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-md border border-line text-muted transition hover:border-ink/40 hover:text-ink"
                 >
-                  <svg viewBox="0 0 24 24" width={17} height={17} fill="currentColor" aria-hidden>
+                  <svg viewBox="0 0 24 24" width={15} height={15} fill="currentColor" aria-hidden>
                     <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.66H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" />
                   </svg>
                 </a>
@@ -896,7 +897,7 @@ export default function HomePage() {
                     { k: "0", v: "Downtime on a live platform used by 75 staff at a national event" },
                   ].map((s) => (
                     <div key={s.k} className="bg-card p-5">
-                      <dt className="font-display text-2xl font-extrabold tracking-tight md:text-3xl">{s.k}</dt>
+                      <dt className="whitespace-nowrap font-display text-xl font-extrabold tracking-tight sm:text-2xl md:text-3xl">{s.k}</dt>
                       <dd className="mt-1.5 text-sm leading-6 text-muted">{s.v}</dd>
                     </div>
                   ))}
