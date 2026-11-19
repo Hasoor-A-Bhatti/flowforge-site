@@ -115,3 +115,7 @@ body {
 
 /* Options in the open dropdown list always use normal ink, even when the closed select shows placeholder grey */
 select option { color: var(--color-ink); }
+
+/* Sideways-scrolling rows on phones: hide the scrollbar, keep swipe */
+.no-scrollbar { scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

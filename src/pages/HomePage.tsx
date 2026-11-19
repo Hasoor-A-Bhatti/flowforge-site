@@ -132,6 +132,11 @@ const runLean = [
   },
 ];
 
+const pillars = [
+  { heading: "Win more work", sub: "Turn more enquiries into paid jobs", items: winMore, icon: PoundSterling },
+  { heading: "Run a leaner back office", sub: "Cut the hours between job done and money in", items: runLean, icon: Timer },
+];
+
 const tools = [
   "Xero",
   "QuickBooks",
@@ -223,6 +228,15 @@ function PrimaryCta({
     >
       {children} <ArrowRight size={18} />
     </BookLink>
+  );
+}
+
+/** Small "swipe" cue under sideways-scrolling rows; phones only. */
+function SwipeHint({ count, breakpoint = "sm" }: { count: number; breakpoint?: "sm" | "md" }) {
+  return (
+    <p className={`mt-3 text-xs font-medium text-muted ${breakpoint === "sm" ? "sm:hidden" : "md:hidden"}`}>
+      Swipe to see all {count} →
+    </p>
   );
 }
 
@@ -387,19 +401,19 @@ function ContactSection() {
   ].filter(Boolean) as { href: string; icon: typeof Phone; label: string; event: string; external?: boolean }[];
 
   return (
-    <section id="contact" className="scroll-mt-20 px-4 py-20 md:px-6 md:py-28">
-      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+    <section id="contact" className="scroll-mt-20 px-4 py-14 md:px-6 md:py-28">
+      <div className="mx-auto grid max-w-6xl gap-8 md:gap-12 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <Eyebrow>Free systems review</Eyebrow>
           <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
             Find out where your business is losing time and money.
           </h2>
-          <p className="mt-5 text-lg leading-8 text-muted">
+          <p className="mt-4 text-base leading-7 text-muted md:mt-5 md:text-lg md:leading-8">
             A 30-minute call, no obligation. You'll come away with a clear
             picture of what's costing you, even if you never work with us.
           </p>
 
-          <ul className="mt-8 space-y-3">
+          <ul className="mt-6 space-y-2.5 text-[15px] md:mt-8 md:space-y-3 md:text-base">
             {[
               "We map how a job moves from enquiry to payment",
               "We pinpoint the 2–3 biggest time and money leaks",
@@ -414,11 +428,11 @@ function ContactSection() {
             ))}
           </ul>
 
-          <div className="mt-10">
+          <div className="mt-7 md:mt-10">
             <PrimaryCta where="contact">Pick a time that suits you</PrimaryCta>
           </div>
 
-          <div className="mt-10 rounded-xl border border-line bg-card p-5">
+          <div className="mt-7 rounded-xl border border-line bg-card p-5 md:mt-10">
             <div className="flex items-center gap-4">
               <img
                 src={founder.photo}
@@ -566,6 +580,7 @@ function ContactSection() {
 
 export default function HomePage() {
   const [sim, setSim] = useState<SimState>(() => initialSim());
+  const [pillar, setPillar] = useState(0);
 
   // Arriving from another page via a link like /#about: scroll once rendered.
   useEffect(() => {
@@ -597,8 +612,8 @@ export default function HomePage() {
 
       <main>
         {/* HERO */}
-        <section className="px-4 pb-16 pt-14 md:px-6 md:pb-24 md:pt-20">
-          <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
+        <section className="px-4 pb-12 pt-10 md:px-6 md:pb-24 md:pt-20">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 md:gap-14 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="rise">
               <p className="inline-flex items-center gap-2 rounded-full border border-line bg-card px-3 py-1.5 text-sm font-medium text-muted">
                 <Wrench size={15} className="text-accent" />
@@ -611,14 +626,14 @@ export default function HomePage() {
                 <span className="text-accent">Less time on paperwork.</span>
               </h1>
 
-              <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
+              <p className="mt-5 max-w-xl text-base leading-7 text-muted md:mt-6 md:text-lg md:leading-8">
                 We build the systems behind busy trade and service firms. Every
                 enquiry gets answered, every quote gets chased, and the admin
                 between job and invoice runs itself. You win more work and get
                 your evenings back.
               </p>
 
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row md:mt-9">
                 <PrimaryCta where="hero" />
                 <a
                   href="#process"
@@ -644,12 +659,12 @@ export default function HomePage() {
         </section>
 
         {/* TRADES STRIP */}
-        <section className="border-y border-line bg-card px-4 py-6 md:px-6">
-          <div className="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center">
+        <section className="border-y border-line bg-card px-4 py-5 md:px-6 md:py-6">
+          <div className="mx-auto flex max-w-6xl flex-col gap-3 md:flex-row md:items-center md:gap-4">
             <p className="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] text-muted">Built for</p>
-            <ul className="flex flex-wrap gap-2">
+            <ul className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
               {trades.map((t) => (
-                <li key={t} className="rounded-full border border-line px-3 py-1 text-sm">
+                <li key={t} className="shrink-0 whitespace-nowrap rounded-full border border-line px-3 py-1 text-sm">
                   {t}
                 </li>
               ))}
@@ -658,7 +673,7 @@ export default function HomePage() {
         </section>
 
         {/* PROBLEM */}
-        <section className="px-4 py-20 md:px-6 md:py-28">
+        <section className="px-4 py-14 md:px-6 md:py-28">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-3xl">
               <Eyebrow>The problem</Eyebrow>
@@ -666,40 +681,41 @@ export default function HomePage() {
                 You're good at the work. The admin around it costs you more
                 than you think.
               </h2>
-              <p className="mt-5 text-lg leading-8 text-muted">
+              <p className="mt-4 text-base leading-7 text-muted md:mt-5 md:text-lg md:leading-8">
                 Most trade businesses don't lose money on the job. They lose it
                 in the gaps: the enquiry nobody answered, the quote nobody
                 chased, the invoice that went out a week late.
               </p>
             </div>
 
-            <div className="mt-14 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+            <div className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:mt-14 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-px sm:overflow-hidden sm:rounded-xl sm:border sm:border-line sm:bg-line sm:p-0 lg:grid-cols-3">
               {leaks.map(({ icon: Icon, title, text }) => (
-                <div key={title} className="bg-card p-7">
+                <div key={title} className="w-[80%] shrink-0 snap-start rounded-xl border border-line bg-card p-6 sm:w-auto sm:rounded-none sm:border-0 sm:p-7">
                   <Icon size={22} className="text-accent" />
-                  <h3 className="mt-5 font-display text-lg font-bold">{title}</h3>
-                  <p className="mt-2 leading-7 text-muted">{text}</p>
+                  <h3 className="mt-4 font-display text-lg font-bold sm:mt-5">{title}</h3>
+                  <p className="mt-2 text-[15px] leading-6 text-muted sm:text-base sm:leading-7">{text}</p>
                 </div>
               ))}
             </div>
+            <SwipeHint count={leaks.length} />
           </div>
         </section>
 
         {/* CALCULATOR */}
-        <section id="simulator" className="scroll-mt-20 border-t border-line bg-card px-4 py-20 md:px-6 md:py-28">
+        <section id="simulator" className="scroll-mt-20 border-t border-line bg-card px-4 py-14 md:px-6 md:py-28">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-3xl">
               <Eyebrow>Growth calculator</Eyebrow>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
                 See what a few more jobs a month is really worth.
               </h2>
-              <p className="mt-5 text-lg leading-8 text-muted">
+              <p className="mt-4 text-base leading-7 text-muted md:mt-5 md:text-lg md:leading-8">
                 Pick your trade, set your numbers and drag the slider. Small
                 gains in jobs won add up fast, and you keep the time you save
                 on admin.
               </p>
             </div>
-            <div className="mt-12">
+            <div className="mt-8 md:mt-12">
               <GrowthSimulator sim={sim} setSim={setSim} />
             </div>
           </div>
@@ -713,18 +729,34 @@ export default function HomePage() {
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
                 Two things every system we build has to do.
               </h2>
-              <p className="mt-5 text-lg leading-8 text-slate-300">
+              <p className="mt-4 text-base leading-7 text-slate-300 md:mt-5 md:text-lg md:leading-8">
                 Bring in more revenue, and take cost and hassle out of running
                 the business. If it doesn't do one of those, we don't build it.
               </p>
             </div>
 
-            <div className="mt-14 grid gap-6 lg:grid-cols-2">
-              {[
-                { heading: "Win more work", sub: "Turn more enquiries into paid jobs", items: winMore, icon: PoundSterling },
-                { heading: "Run a leaner back office", sub: "Cut the hours between job done and money in", items: runLean, icon: Timer },
-              ].map(({ heading, sub, items, icon: HeadIcon }) => (
-                <div key={heading} className="rounded-xl border border-white/10 bg-ink-2 p-7 md:p-9">
+            <div role="tablist" aria-label="What we fix" className="mt-8 grid grid-cols-2 gap-1 rounded-lg bg-ink-2 p-1 lg:hidden">
+              {pillars.map((pl, i) => (
+                <button
+                  key={pl.heading}
+                  role="tab"
+                  aria-selected={pillar === i}
+                  onClick={() => setPillar(i)}
+                  className={`rounded-md px-3 py-2.5 text-sm font-semibold transition ${
+                    pillar === i ? "bg-accent text-white" : "text-slate-300"
+                  }`}
+                >
+                  {pl.heading}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-4 grid gap-6 lg:mt-14 lg:grid-cols-2">
+              {pillars.map(({ heading, sub, items, icon: HeadIcon }, i) => (
+                <div
+                  key={heading}
+                  className={`rounded-xl border border-white/10 bg-ink-2 p-6 md:p-9 ${pillar === i ? "block" : "hidden lg:block"}`}
+                >
                   <div className="flex items-center gap-3">
                     <span className="grid h-10 w-10 place-items-center rounded-md bg-accent text-white">
                       <HeadIcon size={20} />
@@ -734,13 +766,13 @@ export default function HomePage() {
                       <p className="text-sm text-slate-400">{sub}</p>
                     </div>
                   </div>
-                  <ul className="mt-8 space-y-6">
+                  <ul className="mt-6 space-y-5 md:mt-8 md:space-y-6">
                     {items.map(({ icon: Icon, title, text }) => (
                       <li key={title} className="flex gap-4">
                         <Icon size={20} className="mt-0.5 shrink-0 text-accent" />
                         <div>
                           <p className="font-semibold">{title}</p>
-                          <p className="mt-1 leading-7 text-slate-300">{text}</p>
+                          <p className="mt-1 text-[15px] leading-6 text-slate-300 md:text-base md:leading-7">{text}</p>
                         </div>
                       </li>
                     ))}
@@ -749,9 +781,9 @@ export default function HomePage() {
               ))}
             </div>
 
-            <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-8 md:flex-row md:items-center">
+            <div className="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 md:mt-12 md:flex-row md:items-center md:gap-4 md:pt-8">
               <p className="shrink-0 text-sm text-slate-400">Works alongside tools like</p>
-              <ul className="flex flex-wrap gap-x-6 gap-y-2 font-display text-lg font-semibold text-slate-200">
+              <ul className="flex flex-wrap gap-x-4 gap-y-1.5 font-display text-base font-semibold text-slate-200 md:gap-x-6 md:gap-y-2 md:text-lg">
                 {tools.map((t) => (
                   <li key={t}>{t}</li>
                 ))}
@@ -761,19 +793,19 @@ export default function HomePage() {
         </section>
 
         {/* A DAY WITH FLOWFORGE */}
-        <section className="px-4 py-20 md:px-6 md:py-28">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+        <section className="px-4 py-14 md:px-6 md:py-28">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 md:gap-12 lg:grid-cols-2">
             <div>
               <Eyebrow>What it looks like day to day</Eyebrow>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">
                 You do the jobs. The system does everything around them.
               </h2>
-              <p className="mt-5 text-lg leading-8 text-muted">
+              <p className="mt-4 text-base leading-7 text-muted md:mt-5 md:text-lg md:leading-8">
                 Once it's running, the follow-ups, reminders, invoices and
                 chasers happen on their own, in your name and your tone of
                 voice. You just see what's been done.
               </p>
-              <ul className="mt-8 space-y-4">
+              <ul className="mt-8 hidden space-y-4 md:block">
                 {[
                   { t: "Nothing slips through", d: "Every enquiry, quote and unpaid invoice is tracked until it's closed." },
                   { t: "Works from your phone", d: "Summaries and approvals land where you already are: text, email or WhatsApp." },
@@ -796,7 +828,7 @@ export default function HomePage() {
         </section>
 
         {/* PROCESS */}
-        <section id="process" className="scroll-mt-20 border-t border-line bg-card px-4 py-20 md:px-6 md:py-28">
+        <section id="process" className="scroll-mt-20 border-t border-line bg-card px-4 py-14 md:px-6 md:py-28">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-3xl">
               <Eyebrow>How it works</Eyebrow>
@@ -805,30 +837,31 @@ export default function HomePage() {
               </h2>
             </div>
 
-            <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-1 md:mx-0 md:mt-14 md:grid md:snap-none md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 lg:grid-cols-4">
               {steps.map((s) => (
-                <div key={s.n} className="border-t-2 border-ink pt-6">
+                <div key={s.n} className="w-[78%] shrink-0 snap-start border-t-2 border-ink pt-5 md:w-auto md:pt-6">
                   <div className="flex items-baseline justify-between">
                     <span className="font-mono text-sm font-bold text-accent">{s.n}</span>
                     <span className="text-xs font-medium text-muted">{s.time}</span>
                   </div>
                   <h3 className="mt-4 font-display text-xl font-bold">{s.title}</h3>
-                  <p className="mt-3 leading-7 text-muted">{s.text}</p>
+                  <p className="mt-3 text-[15px] leading-6 text-muted md:text-base md:leading-7">{s.text}</p>
                 </div>
               ))}
             </div>
+            <SwipeHint count={steps.length} breakpoint="md" />
 
-            <div className="mt-16 grid gap-6 rounded-xl bg-paper p-7 md:grid-cols-3 md:p-9">
+            <div className="mt-8 grid gap-4 rounded-xl bg-paper p-5 md:mt-16 md:grid-cols-3 md:gap-6 md:p-9">
               {[
                 { t: "You own it", d: "Everything we build runs on your accounts and belongs to you. No lock-in." },
                 { t: "Measured, not guessed", d: "We agree what success looks like up front, such as response time, quotes won or hours saved, and report against it." },
                 { t: "UK-based & GDPR-minded", d: "We only use the data each process needs, on reputable, established platforms." },
               ].map((c) => (
                 <div key={c.t}>
-                  <p className="flex items-center gap-2 font-display text-lg font-bold">
+                  <p className="flex items-center gap-2 font-display font-bold md:text-lg">
                     <Check size={18} className="text-ok" strokeWidth={3} /> {c.t}
                   </p>
-                  <p className="mt-2 leading-7 text-muted">{c.d}</p>
+                  <p className="mt-1 text-sm leading-6 text-muted md:mt-2 md:text-base md:leading-7">{c.d}</p>
                 </div>
               ))}
             </div>
@@ -836,9 +869,9 @@ export default function HomePage() {
         </section>
 
         {/* ABOUT */}
-        <section id="about" className="scroll-mt-20 border-t border-line px-4 py-16 md:px-6 md:py-24">
+        <section id="about" className="scroll-mt-20 border-t border-line px-4 py-14 md:px-6 md:py-24">
           <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[260px_1fr] lg:gap-16">
-            <figure className="order-last w-full max-w-[240px] lg:order-none lg:mt-12 lg:max-w-none">
+            <figure className="hidden lg:mt-12 lg:block">
               <div className="overflow-hidden rounded-xl border border-line bg-card shadow-[0_20px_50px_-30px_rgba(14,26,36,0.35)]">
                 <img
                   src={founder.photo}
@@ -876,18 +909,25 @@ export default function HomePage() {
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
                 Our mission at FlowForge
               </h2>
-              <p className="mt-6 border-l-4 border-accent pl-5 font-display text-xl font-semibold leading-8 text-ink md:text-2xl md:leading-9">
+              <p className="mt-5 border-l-4 border-accent pl-4 font-display text-lg font-semibold leading-7 md:mt-6 md:pl-5 md:text-xl md:leading-8 text-ink md:text-2xl md:leading-9">
                 To give every trade and service business the systems big
                 companies take for granted, so no enquiry goes unanswered, no
                 quote goes unchased and no evening is lost to paperwork.
               </p>
-              <p className="mt-6 text-lg leading-8 text-muted">
+              <div className="mt-5 flex items-center gap-3 lg:hidden">
+                <img src={founder.photo} alt="" width={48} height={48} loading="lazy" className="h-12 w-12 rounded-full object-cover" />
+                <p className="text-sm leading-5">
+                  <span className="block font-semibold">{founder.name}</span>
+                  <span className="text-muted">{founder.role}, {founder.location}</span>
+                </p>
+              </div>
+              <p className="mt-5 text-base leading-7 text-muted md:mt-6 md:text-lg md:leading-8">
                 We build around the tools you already use, explain everything in
                 plain English and measure our work by one thing: more jobs won
                 and more hours back for the people doing the work.
               </p>
 
-              <div className="mt-10">
+              <div className="mt-8 md:mt-10">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Results from recent projects</p>
                 <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line">
                   {[
@@ -908,7 +948,7 @@ export default function HomePage() {
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="scroll-mt-20 border-t border-line px-4 py-20 md:px-6 md:py-28">
+        <section id="faq" className="scroll-mt-20 border-t border-line px-4 py-14 md:px-6 md:py-28">
           <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <Eyebrow>Questions</Eyebrow>

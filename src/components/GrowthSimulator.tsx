@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { animate, useReducedMotion } from "framer-motion";
-import { ArrowDown, ArrowRight, Info } from "lucide-react";
+import { ArrowDown, ArrowRight, ChevronDown, Info } from "lucide-react";
 import {
   applyTrade,
   compute,
@@ -373,6 +373,7 @@ export function GrowthSimulator({
 }) {
   const r = compute(sim);
   const set = (k: keyof SimState) => (v: number) => setSim((p) => ({ ...p, [k]: v }));
+  const [showInputs, setShowInputs] = useState(false);
 
   // Split extra jobs into whole numbers that always add up.
   const split = sources.map((s) => Math.floor(r.extraJobs * s.share));
@@ -382,7 +383,7 @@ export function GrowthSimulator({
     <div className="overflow-hidden rounded-2xl border border-line bg-card shadow-[0_30px_70px_-40px_rgba(14,26,36,0.35)]">
       <div className="grid lg:grid-cols-[380px_1fr]">
         {/* Inputs */}
-        <div className="space-y-7 border-b border-line p-6 md:p-8 lg:border-b-0 lg:border-r">
+        <div className="space-y-6 border-b border-line p-5 md:space-y-7 md:p-8 lg:border-b-0 lg:border-r">
           <div>
             <p className="text-sm font-medium">Your trade</p>
             <p className="mt-0.5 text-xs text-muted">Sets typical starting figures. Adjust them to match you.</p>
@@ -391,8 +392,25 @@ export function GrowthSimulator({
             </div>
           </div>
 
-          <div className="space-y-6 border-t border-line pt-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Your business today</p>
+          {/* Phones: detailed inputs fold away behind a summary button */}
+          <button
+            type="button"
+            onClick={() => setShowInputs((v) => !v)}
+            aria-expanded={showInputs}
+            aria-controls="sim-inputs"
+            className="flex w-full items-center justify-between gap-3 rounded-lg border border-line bg-paper px-4 py-3 text-left lg:hidden"
+          >
+            <span>
+              <span className="block text-sm font-semibold">Adjust your numbers</span>
+              <span className="block text-xs text-muted">
+                {sim.jobs} jobs/mo · {gbp(sim.value)} avg · {sim.margin}% margin · {sim.adminHours} hrs admin
+              </span>
+            </span>
+            <ChevronDown size={18} className={`shrink-0 text-muted transition-transform ${showInputs ? "rotate-180" : ""}`} />
+          </button>
+
+          <div id="sim-inputs" className={`space-y-6 border-line lg:block lg:border-t lg:pt-6 ${showInputs ? "block" : "hidden"}`}>
+            <p className="hidden text-xs font-semibold uppercase tracking-[0.14em] text-muted lg:block">Your business today</p>
             <Range label="Jobs per month" value={sim.jobs} min={2} max={300} onChange={set("jobs")} display={String(sim.jobs)} />
             <Range label="Average job value" value={sim.value} min={50} max={15000} step={50} onChange={set("value")} display={gbp(sim.value)} />
             <Range label="Profit margin" value={sim.margin} min={5} max={70} onChange={set("margin")} display={`${sim.margin}%`} />
@@ -414,8 +432,8 @@ export function GrowthSimulator({
         </div>
 
         {/* Outputs */}
-        <div className="p-6 md:p-8">
-          <div className="grid gap-6 sm:grid-cols-[1.3fr_1fr]">
+        <div className="p-5 md:p-8">
+          <div className="grid gap-5 sm:grid-cols-[1.3fr_1fr] md:gap-6">
             <div>
               <p className="text-sm text-muted">Extra revenue, first 12 months</p>
               <AnimatedNumber
@@ -441,7 +459,7 @@ export function GrowthSimulator({
             </dl>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-6 md:mt-8">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <p className="text-sm font-semibold">Extra revenue banked over 12 months</p>
               <p className="text-xs text-muted">Hover or tap the chart for each month</p>
@@ -476,7 +494,7 @@ export function GrowthSimulator({
             </details>
           </div>
 
-          <div className="mt-8 border-t border-line pt-6">
+          <div className="mt-8 hidden border-t border-line pt-6 sm:block">
             <p className="text-sm font-semibold">Where the extra jobs typically come from</p>
             <ul className="mt-4 space-y-3">
               {sources.map((s, i) => (
@@ -494,7 +512,7 @@ export function GrowthSimulator({
             </ul>
           </div>
 
-          <div className="mt-8 flex flex-col gap-4 rounded-xl bg-paper p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-6 flex flex-col gap-4 rounded-xl bg-paper p-4 sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:p-5">
             <p className="flex gap-2 text-xs leading-5 text-muted">
               <Info size={14} className="mt-0.5 shrink-0" />
               An illustration, not a promise. It assumes results build over the
