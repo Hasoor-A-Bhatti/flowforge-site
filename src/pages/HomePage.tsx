@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   BellRing,
@@ -17,11 +17,25 @@ import {
   Timer,
   Wrench,
   ChevronDown,
+  Lock,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
 } from "lucide-react";
-import { SiteFooter, SiteNav } from "../components/SiteChrome";
+import { Link } from "react-router-dom";
+import { BookLink, MobileActionBar, SiteFooter, SiteNav } from "../components/SiteChrome";
 import { GrowthSimulator, QuickEstimate } from "../components/GrowthSimulator";
 import { initialSim, type SimState } from "../lib/growthModel";
-import { calendlyLink, contactEmail, formspreeEndpoint } from "../lib/site";
+import {
+  contactEmail,
+  formspreeEndpoint,
+  founder,
+  phoneDisplay,
+  phoneHref,
+  track,
+  whatsappHref,
+} from "../lib/site";
 
 /* ------------------------------------------------------------------ */
 /* Content                                                             */
@@ -195,16 +209,20 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-function PrimaryCta({ children = "Book a free systems review" }: { children?: React.ReactNode }) {
+function PrimaryCta({
+  children = "Book a free systems review",
+  where,
+}: {
+  children?: React.ReactNode;
+  where: string;
+}) {
   return (
-    <a
-      href={calendlyLink}
-      target="_blank"
-      rel="noopener noreferrer"
+    <BookLink
+      where={where}
       className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md bg-accent px-6 py-3.5 font-semibold text-white shadow-sm transition hover:bg-accent-dark"
     >
       {children} <ArrowRight size={18} />
-    </a>
+    </BookLink>
   );
 }
 
@@ -339,22 +357,34 @@ function ContactSection() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const gotcha = new FormData(e.currentTarget).get("_gotcha");
+    if (gotcha) return; // a bot filled the hidden field
     setStatus("submitting");
     try {
       const res = await fetch(formspreeEndpoint, {
         method: "POST",
         headers: { Accept: "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          _subject: `New enquiry: ${formData.company || formData.name} (${formData.trade})`,
+          _replyto: formData.email,
+        }),
       });
       if (!res.ok) throw new Error("Form submission failed");
       setStatus("success");
+      track("Enquiry sent", { trade: formData.trade });
       setFormData(emptyForm);
-      setTimeout(() => setStatus("idle"), 6000);
     } catch (err) {
       console.error(err);
       setStatus("error");
     }
   }
+
+  const otherWays = [
+    phoneHref && { href: phoneHref, icon: Phone, label: `Call ${phoneDisplay}`, event: "Call click" },
+    whatsappHref && { href: whatsappHref, icon: MessageCircle, label: "Message on WhatsApp", event: "WhatsApp click", external: true },
+    { href: `mailto:${contactEmail}`, icon: Mail, label: contactEmail, event: "Email click" },
+  ].filter(Boolean) as { href: string; icon: typeof Phone; label: string; event: string; external?: boolean }[];
 
   return (
     <section id="contact" className="scroll-mt-20 px-4 py-20 md:px-6 md:py-28">
@@ -384,89 +414,147 @@ function ContactSection() {
             ))}
           </ul>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <PrimaryCta>Pick a time</PrimaryCta>
-            <a href={`mailto:${contactEmail}`} className="text-sm font-medium text-muted underline-offset-4 hover:text-ink hover:underline">
-              or email {contactEmail}
-            </a>
+          <div className="mt-10">
+            <PrimaryCta where="contact">Pick a time that suits you</PrimaryCta>
+          </div>
+
+          <div className="mt-10 rounded-xl border border-line bg-card p-5">
+            <div className="flex items-center gap-4">
+              <img
+                src={founder.photo}
+                alt={founder.name}
+                width={56}
+                height={56}
+                loading="lazy"
+                className="h-14 w-14 rounded-full object-cover"
+              />
+              <div>
+                <p className="font-semibold">You'll speak to {founder.name.split(" ")[0]} directly</p>
+                <p className="text-sm text-muted">No sales team, no call centre.</p>
+              </div>
+            </div>
+            <ul className="mt-5 space-y-2 border-t border-line pt-4 text-sm">
+              {otherWays.map(({ href, icon: Icon, label, event, external }) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    onClick={() => track(event, { where: "contact" })}
+                    className="inline-flex items-center gap-2.5 font-medium hover:text-accent"
+                  >
+                    <Icon size={16} className="text-accent" /> {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-xl border border-line bg-card p-6 md:p-8">
-          <p className="font-display text-xl font-bold">Prefer to send the details first?</p>
-          <p className="mt-1 text-sm text-muted">We reply within one working day.</p>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <label className="space-y-1.5">
-              <span className="block text-sm font-medium">Name</span>
-              <input name="name" value={formData.name} onChange={handleChange} required className={inputCls} placeholder="Your name" autoComplete="name" />
-            </label>
-            <label className="space-y-1.5">
-              <span className="block text-sm font-medium">Email</span>
-              <input name="email" type="email" value={formData.email} onChange={handleChange} required className={inputCls} placeholder="you@business.co.uk" autoComplete="email" />
-            </label>
-            <label className="space-y-1.5">
-              <span className="block text-sm font-medium">Business name</span>
-              <input name="company" value={formData.company} onChange={handleChange} className={inputCls} placeholder="e.g. Smith Plumbing Ltd" autoComplete="organization" />
-            </label>
-            <label className="space-y-1.5">
-              <span className="block text-sm font-medium">Phone <span className="text-muted">(optional)</span></span>
-              <input name="phone" type="tel" value={formData.phone} onChange={handleChange} className={inputCls} placeholder="07…" autoComplete="tel" />
-            </label>
-            <label className="space-y-1.5">
-              <span className="block text-sm font-medium">Trade / sector</span>
-              <Select name="trade" value={formData.trade} onChange={handleChange} required>
-                <option value="" disabled>Choose your trade</option>
-                {trades.map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-                <option value="Other service business">Other service business</option>
-              </Select>
-            </label>
-            <label className="space-y-1.5">
-              <span className="block text-sm font-medium">Team size</span>
-              <Select name="teamSize" value={formData.teamSize} onChange={handleChange}>
-                <option value="" disabled>How many people?</option>
-                <option>Just me</option>
-                <option>2–5 people</option>
-                <option>6–20 people</option>
-                <option>21–50 people</option>
-                <option>50+ people</option>
-              </Select>
-            </label>
+        {status === "success" ? (
+          <div className="flex flex-col justify-center rounded-xl border border-line bg-card p-8 text-center md:p-12" role="status">
+            <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-ok-soft text-ok">
+              <Check size={28} strokeWidth={3} />
+            </span>
+            <p className="mt-6 font-display text-2xl font-bold">Thanks, that's come through.</p>
+            <p className="mx-auto mt-3 max-w-md leading-7 text-muted">
+              I'll read it personally and get back to you within one working
+              day. If you'd rather not wait, grab a slot for your free review
+              now.
+            </p>
+            <div className="mt-8 flex flex-col items-center gap-4">
+              <PrimaryCta where="form success">Book my free review</PrimaryCta>
+              <button type="button" onClick={() => setStatus("idle")} className="text-sm font-medium text-muted hover:text-ink">
+                Send another enquiry
+              </button>
+            </div>
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="rounded-xl border border-line bg-card p-6 md:p-8">
+            <p className="font-display text-xl font-bold">Prefer to send the details first?</p>
+            <p className="mt-1 text-sm text-muted">Takes about a minute. We reply within one working day.</p>
 
-          <label className="mt-4 block space-y-1.5">
-            <span className="block text-sm font-medium">What's taking up the most time right now?</span>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              required
-              className={`${inputCls} min-h-32`}
-              placeholder="e.g. We miss calls while on site, quotes don't get followed up, invoices get done on Sunday nights…"
-            />
-          </label>
+            {/* Honeypot: hidden from people, catches spam bots */}
+            <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
 
-          {status === "success" && (
-            <div className="mt-5 rounded-md border border-ok/20 bg-ok-soft px-4 py-3 text-sm font-medium text-ok">
-              Thanks, that's come through. We'll be in touch within one working day.
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <label className="space-y-1.5">
+                <span className="block text-sm font-medium">Name</span>
+                <input name="name" value={formData.name} onChange={handleChange} required className={inputCls} placeholder="Your name" autoComplete="name" />
+              </label>
+              <label className="space-y-1.5">
+                <span className="block text-sm font-medium">Email</span>
+                <input name="email" type="email" value={formData.email} onChange={handleChange} required className={inputCls} placeholder="you@business.co.uk" autoComplete="email" />
+              </label>
+              <label className="space-y-1.5">
+                <span className="block text-sm font-medium">Business name</span>
+                <input name="company" value={formData.company} onChange={handleChange} className={inputCls} placeholder="e.g. Smith Plumbing Ltd" autoComplete="organization" />
+              </label>
+              <label className="space-y-1.5">
+                <span className="block text-sm font-medium">Phone <span className="text-muted">(optional)</span></span>
+                <input name="phone" type="tel" value={formData.phone} onChange={handleChange} className={inputCls} placeholder="07…" autoComplete="tel" />
+              </label>
+              <label className="space-y-1.5">
+                <span className="block text-sm font-medium">Trade / sector</span>
+                <Select name="trade" value={formData.trade} onChange={handleChange} required>
+                  <option value="" disabled>Choose your trade</option>
+                  {trades.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                  <option value="Other service business">Other service business</option>
+                </Select>
+              </label>
+              <label className="space-y-1.5">
+                <span className="block text-sm font-medium">Team size</span>
+                <Select name="teamSize" value={formData.teamSize} onChange={handleChange}>
+                  <option value="" disabled>How many people?</option>
+                  <option>Just me</option>
+                  <option>2–5 people</option>
+                  <option>6–20 people</option>
+                  <option>21–50 people</option>
+                  <option>50+ people</option>
+                </Select>
+              </label>
             </div>
-          )}
-          {status === "error" && (
-            <div className="mt-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-              Something went wrong. Please try again or email {contactEmail}.
-            </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={status === "submitting"}
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-ink px-6 py-3.5 font-semibold text-white transition hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {status === "submitting" ? "Sending…" : "Send details"} <ArrowRight size={18} />
-          </button>
-        </form>
+            <label className="mt-4 block space-y-1.5">
+              <span className="block text-sm font-medium">What's taking up the most time right now?</span>
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                className={`${inputCls} min-h-32`}
+                placeholder="e.g. We miss calls while on site, quotes don't get followed up, invoices get done on Sunday nights…"
+              />
+            </label>
+
+            {status === "error" && (
+              <div className="mt-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700" role="alert">
+                Something went wrong. Please try again or email {contactEmail}.
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={status === "submitting"}
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-ink px-6 py-3.5 font-semibold text-white transition hover:bg-ink-2 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {status === "submitting" ? "Sending…" : "Send details"} <ArrowRight size={18} />
+            </button>
+
+            <p className="mt-4 flex items-start gap-2 text-xs leading-5 text-muted">
+              <Lock size={13} className="mt-0.5 shrink-0" />
+              <span>
+                Your details are only used to reply to your enquiry and are
+                never shared or sold. See our{" "}
+                <Link to="/privacy" className="font-medium text-ink underline underline-offset-2">
+                  privacy notice
+                </Link>
+                .
+              </span>
+            </p>
+          </form>
+        )}
       </div>
     </section>
   );
@@ -478,6 +566,30 @@ function ContactSection() {
 
 export default function HomePage() {
   const [sim, setSim] = useState<SimState>(() => initialSim());
+
+  // Arriving from another page via a link like /#about: scroll once rendered.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    const id = requestAnimationFrame(() =>
+      document.querySelector(hash)?.scrollIntoView({ behavior: "instant", block: "start" })
+    );
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  // Record the first time a visitor plays with the calculator.
+  const usedCalculator = useRef(false);
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    if (!usedCalculator.current) {
+      usedCalculator.current = true;
+      track("Calculator used", { trade: sim.trade });
+    }
+  }, [sim]);
 
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -507,7 +619,7 @@ export default function HomePage() {
               </p>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <PrimaryCta />
+                <PrimaryCta where="hero" />
                 <a
                   href="#process"
                   className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border border-ink/15 bg-card px-6 py-3.5 font-semibold transition hover:border-ink/40"
@@ -723,6 +835,77 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ABOUT */}
+        <section id="about" className="scroll-mt-20 border-t border-line px-4 py-20 md:px-6 md:py-28">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-16">
+            <figure className="mx-auto w-full max-w-sm lg:max-w-none">
+              <div className="overflow-hidden rounded-2xl border border-line bg-card shadow-[0_30px_70px_-40px_rgba(14,26,36,0.4)]">
+                <img
+                  src={founder.photo}
+                  alt={`${founder.name}, founder of FlowForge AI`}
+                  width={720}
+                  height={720}
+                  loading="lazy"
+                  className="aspect-square w-full object-cover"
+                />
+              </div>
+              <figcaption className="mt-4 flex items-center justify-between gap-4">
+                <span>
+                  <span className="block font-display text-lg font-bold">{founder.name}</span>
+                  <span className="flex items-center gap-1.5 text-sm text-muted">
+                    {founder.role} <span aria-hidden>·</span> <MapPin size={13} /> {founder.location}
+                  </span>
+                </span>
+                <a
+                  href={founder.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${founder.name} on LinkedIn`}
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-line text-muted transition hover:border-ink/40 hover:text-ink"
+                >
+                  <svg viewBox="0 0 24 24" width={17} height={17} fill="currentColor" aria-hidden>
+                    <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.66H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" />
+                  </svg>
+                </a>
+              </figcaption>
+            </figure>
+
+            <div>
+              <Eyebrow>About us</Eyebrow>
+              <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
+                Our mission at FlowForge
+              </h2>
+              <p className="mt-6 border-l-4 border-accent pl-5 font-display text-xl font-semibold leading-8 text-ink md:text-2xl md:leading-9">
+                To give every trade and service business the systems big
+                companies take for granted, so no enquiry goes unanswered, no
+                quote goes unchased and no evening is lost to paperwork.
+              </p>
+              <p className="mt-6 text-lg leading-8 text-muted">
+                We build around the tools you already use, explain everything in
+                plain English and measure our work by one thing: more jobs won
+                and more hours back for the people doing the work.
+              </p>
+
+              <div className="mt-10">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Results from recent projects</p>
+                <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line">
+                  {[
+                    { k: "15 → 2 min", v: "Time to triage each new enquiry, with an automated lead-scoring system" },
+                    { k: "85%+", v: "Less manual processing across three client tool integrations" },
+                    { k: "3 hrs → 30 min", v: "Stock reconciliation after replacing spreadsheets with one system" },
+                    { k: "0", v: "Downtime on a live platform used by 75 staff at a national event" },
+                  ].map((s) => (
+                    <div key={s.k} className="bg-card p-5">
+                      <dt className="font-display text-2xl font-extrabold tracking-tight md:text-3xl">{s.k}</dt>
+                      <dd className="mt-1.5 text-sm leading-6 text-muted">{s.v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* FAQ */}
         <section id="faq" className="scroll-mt-20 border-t border-line px-4 py-20 md:px-6 md:py-28">
           <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.8fr_1.2fr]">
@@ -760,6 +943,7 @@ export default function HomePage() {
       </main>
 
       <SiteFooter />
+      <MobileActionBar />
     </div>
   );
 }
